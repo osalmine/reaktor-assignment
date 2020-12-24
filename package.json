@@ -1,0 +1,8 @@
+{
+  "name": "reaktor-assignment",
+  "version": "0.1.0",
+  "description": "Root package.json to make it possible to deploy to heroku",
+  "scripts": {
+    "postinstall": "npm install --prefix api"
+  }
+}
