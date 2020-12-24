@@ -1,0 +1,14 @@
+.products {
+	padding-top: 7rem;
+}
+
+.product-name {
+	padding-top: 24px;
+	font-size: 26px;
+}
+
+.product-text {
+	font-size: 18px;
+	text-align: left;
+	padding-right: 5px;
+}
