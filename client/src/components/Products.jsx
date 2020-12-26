@@ -55,7 +55,7 @@ function Products(props) {
 					})
 					.then(result => {
 						setAvailability(prevData => {
-							return ([...prevData, {manufacturer: manufact, data: result.data}])
+							return ([...prevData, {manufacturer: manufact, data: result.data}]);
 						});
 					})
 					.catch(err => {
@@ -65,7 +65,7 @@ function Products(props) {
 							console.log("axios get request error");
 							console.log(err);
 							setAvailability(prevData => {
-								return ([...prevData, {manufacturer: manufact, data: "[]"}])
+								return ([...prevData, {manufacturer: manufact, data: {code: err.response.status, response: null}}]);
 							});
 						}
 					});
