@@ -104,7 +104,7 @@ function getProductAvailability(manufacturer, id, availability) {
 	const manufact = availability.find(el => el.manufacturer === manufacturer);
 	if (manufact && manufact.data) {
 		// console.log("manufact:", manufact.manufacturer);
-		if (manufact.data.response[0]) {
+		if (manufact.data.response && manufact.data.response[0]) {
 			// console.log("manufact.data.response[0].id:", manufact.data.response[0].id);
 			// var ok = manufact.data.response.find(el => {
 			// 	// console.log(`el.id: ${el.id}, id: ${id}`);
