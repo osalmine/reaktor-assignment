@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Products.css';
 import ProductCard from './ProductCard';
-import Header from './Header';
 
 function Products(props) {
 	const [productData, setProductData] = useState();
@@ -10,29 +9,33 @@ function Products(props) {
 	const [availability, setAvailability] = useState([]);
 	// const [cancelRequest, setCancelRequest] = useState(false);
 
-	let loading = [...Array(10)].map(() => (
+	let loading = [...Array(15)].map(() => (
 		<ProductCard name="Loading..." />
 	));
 
 	useEffect(() => {
-		const fetchData = async () => {
+		const fetchData = () => {
 			try {
-				const result = await axios(`/api/products/${props.product}`, {
+				axios(`/api/products/${props.product}`, {
 					cancelToken: props.source.token
-				}).catch(err => {
+				})
+				.then(result => {
+					setProductData(result.data);
+					console.log("result.data:", result.data);
+					setUniqueManufact(result.data.filter((el, i, self) => 
+						i === self.findIndex((t) => (
+							t.manufacturer === el.manufacturer
+						))
+					).map(el => el.manufacturer));
+					console.log(result);
+				})
+				.catch(err => {
 					if (axios.isCancel(err)) {
 						console.log("axios request cancelled", err);
 					} else {
 						console.log(err);
 					}
 				});
-				setProductData(result.data);
-				setUniqueManufact(result.data.filter((el, i, self) => 
-					i === self.findIndex((t) => (
-						t.manufacturer === el.manufacturer
-					))
-				).map(el => el.manufacturer));
-				console.log(result);
 			} catch (error) {
 				console.log(error);
 			}
@@ -43,21 +46,24 @@ function Products(props) {
 	console.log("uniqueManufact", uniqueManufact);
 
 	useEffect(() => {
-		const fetchData = async () => {
+		const fetchData = () => {
 			try {
-				uniqueManufact.forEach(async manufact => {
+				uniqueManufact.forEach(manufact => {
 					console.log("quering for", manufact);
-					const result = await axios(`/api/availability/${manufact}`, {
+					axios(`/api/availability/${manufact}`, {
 						cancelToken: props.source.token
-					}).catch(err => {
+					})
+					.then(result => {
+						setAvailability(prevData => {
+							return ([...prevData, {manufacturer: manufact, data: result.data}])
+						});
+					})
+					.catch(err => {
 						if (axios.isCancel(err)) {
 							console.log("axios request cancelled", err);
 						} else {
 							console.log(err);
 						}
-					});
-					setAvailability(prevData => {
-						return ([...prevData, {manufacturer: manufact, data: result.data}])
 					});
 					// console.log("availability:", result.data);
 				});
@@ -71,6 +77,8 @@ function Products(props) {
 	}, [uniqueManufact]);
 
 	console.log("availability:", availability);
+
+	// console.log("productData", productData);
 
 	return (<>
 	<div className="products container">
@@ -91,7 +99,7 @@ function getProductAvailability(manufacturer, id, availability) {
 	const manufact = availability.find(el => el.manufacturer === manufacturer);
 	if (manufact && manufact.data) {
 		// console.log("manufact:", manufact.manufacturer);
-		if (manufact.data.response) {
+		if (manufact.data.response[0]) {
 			// console.log("manufact.data.response[0].id:", manufact.data.response[0].id);
 			// var ok = manufact.data.response.find(el => {
 			// 	// console.log(`el.id: ${el.id}, id: ${id}`);
@@ -105,10 +113,10 @@ function getProductAvailability(manufacturer, id, availability) {
 			// return ("In stock");
 			return (manufact.data.response.find(el => el.id.toLowerCase() === id).inStock);
 		} else {
-			return ("Error");
+			return ("Error ❌");
 		}
 	} else {
-		return ("Loading..");
+		return (null);
 	}
 }
 

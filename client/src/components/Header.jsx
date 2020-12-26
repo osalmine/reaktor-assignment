@@ -9,7 +9,6 @@ function Header(props) {
 	return (
 	<>
 		<nav className="navbar fixed-top navbar-expand-lg navbar-light bg-light py-3">
-			{/* <a className="navbar-brand navbar-brand-text" href="/">West Side Street Clothing</a> */}
 			<NavBrand onCancel={props.onCancel} name="West Side Street Clothing" to="/" activeOnlyWhenExact={true} />
 			<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
 				<span className="navbar-toggler-icon"></span>
@@ -29,7 +28,9 @@ function Header(props) {
 
 function NavBrand(props) {
 	function newCancelReq() {
-		props.onCancel();
+		if (props.onCancel) {
+			props.onCancel();
+		}
 	}
 	return (<>
 		<a onClick={newCancelReq} className="navbar-brand navbar-brand-text" href={props.to}>{props.name}</a>
@@ -42,7 +43,9 @@ function NavLink(props) {
 		exact: props.activeOnlyWhenExact
 	});
 	function newCancelReq() {
-		props.onCancel();
+		if (props.onCancel) {
+			props.onCancel();
+		}
 	}
 	return (<>
 		<a onClick={newCancelReq} className={match ? "nav-link active" : "nav-link"} href={props.to}>{props.name}</a>

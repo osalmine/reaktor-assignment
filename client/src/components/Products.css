@@ -4,11 +4,21 @@
 
 .product-name {
 	padding-top: 24px;
-	font-size: 26px;
+	font-size: 25px;
+	padding: 24px 1.25rem 0;
+	margin-bottom: 0;
 }
 
 .product-text {
 	font-size: 18px;
 	text-align: left;
 	padding-right: 5px;
+}
+
+.loading-img {
+	margin-bottom: 1rem;
+}
+
+.manufacturer-name {
+	font-size: 22px;
 }

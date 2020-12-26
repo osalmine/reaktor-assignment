@@ -5,7 +5,6 @@ import {
   } from "react-router-dom";
 import axios from 'axios';
 import './App.css';
-import Request from './Request';
 import Header from './Header';
 import Home from './Home';
 import Products from './Products';
@@ -17,6 +16,12 @@ function handleCancelRequest() {
 	console.log("Attempting to cancel");
 	source.cancel('canceled');
 }
+
+window.addEventListener("beforeunload", () => {
+	console.log("RELOADING");
+	console.log("Attempting to cancel");
+	source.cancel('canceled');
+});
 
 function App() {
   return (

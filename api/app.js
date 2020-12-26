@@ -10,8 +10,6 @@ const app = express();
 const clientPath = path.join(__dirname, '..', 'client/build');
 app.use(express.static(clientPath));
 
-var requestAgainNb = 5;
-
 async function parseAvailability(resData, manufacturer) {
 	let parsedJson = {
 		"code": 200,
@@ -19,43 +17,54 @@ async function parseAvailability(resData, manufacturer) {
 	};
 
 	// console.log(resData.data.response);
-	if (resData.data.response === '[]' && requestAgainNb !== 0) {
-		setTimeout(() => console.log("waiting 1sec"), 1000);
-		console.log("no data");
-		requestAgainMb -= 1;
-		axios.get(`${apiUrl}availability/${manufacturer}`)
-		.then(response => {
-			let parsedData = parseAvailability(response);
-			return(parsedData);
-		})
-		.catch(error => {
-			console.log(error);
-		});
-	}
-	if (resData.data.response) {
+	// if (resData.data.response === '[]' && requestAgainNb !== 0) {
+	// 	setTimeout(() => console.log("waiting 0.1sec"), 100);
+	// 	console.log("no data");
+	// 	requestAgainNb -= 1;
+	// 	axios.get(`${apiUrl}availability/${manufacturer}`, {
+	// 		// headers: {
+	// 		// 	'x-force-error-mode': 'all'
+	// 		// }
+	// 	})
+	// 	.then(response => {
+	// 		let parsedData = parseAvailability(response);
+	// 		return(parsedData);
+	// 	})
+	// 	.catch(error => {
+	// 		console.log(error);
+	// 	});
+	// }
+	if (resData.data.response && resData.data.response !== '[]') {
 		resData.data.response.forEach(element => {
 			const str = element.DATAPAYLOAD;
 			const responseCode = str.match(/(?<=(<CODE>))\w+?(?=(<\/CODE>))/);
 			const responseStock = str.match(/(?<=(<INSTOCKVALUE>))\w+?(?=(<\/INSTOCKVALUE>))/);
 			parsedJson.response.push({"id": element.id, "code": responseCode[0], "inStock": responseStock[0]});
 		});
-		return (parsedJson);
-	} else {
-		return (null);
 	}
+	return (parsedJson);
 }
 
-axios.interceptors.response.use(null, (err) => {
+axios.interceptors.response.use(res => {
 	console.log("INTERCEPTING RESPONSE");
-	if (err) {
-		console.log(err);
-		return axios.request(config);
+	console.log("URL:", res.config.url);
+	if (res.data.response === '[]') {
+		console.log(res.data.response);
+		console.log("REQUESTING AGAIN");
+		return axios.get(res.config.url).then(res => {
+			console.log("RETURNING SUCCESSFUL DATA", res.data.response[0]);
+			return res;
+		}).catch(err => {
+			console.log("retry failed");
+			return Promise.reject(err);
+		});
 	}
-	return Promise.reject(err);
+	// console.log("returning interception", res.data.response[0]);
+	return res;
 });
 
 app.get('/api/availability/:manufacturer', (req, res) => {
-	console.log("Manufacturer:", req.params.manufacturer);
+	console.log(`URL: ${apiUrl}availability/${req.params.manufacturer}`);
 	axios.get(`${apiUrl}availability/${req.params.manufacturer}`, {
 		// headers: {
 		// 	'x-force-error-mode': 'all'
@@ -63,10 +72,14 @@ app.get('/api/availability/:manufacturer', (req, res) => {
 	}).then(async response => {
 			let parsedData = await parseAvailability(response, req.params.manufacturer);
 			// console.log(parsedData);
-			console.log("sending parsed data");
+			console.log("sending parsed data", req.params.manufacturer);
+			if (parsedData.response[0]) {
+				console.log(parsedData.response[0].inStock);
+			}
 			res.json(parsedData);
 		})
 		.catch(error => {
+			console.log("error", req.params.manufacturer, error);
 			res.send(error);
 		});
 });
@@ -76,11 +89,11 @@ app.get('/api/products/:product', (req, res) => {
 	axios.get(`${apiUrl}products/${req.params.product}`)
 		.then(response => {
 			// console.log(response.data);
-			console.log("sent response");
+			console.log("sent response from");
 			res.json(response.data);
 		})
 		.catch(error => {
-			// console.log("error");
+			console.log("error", error);
 			res.send(error);
 		});
 });
