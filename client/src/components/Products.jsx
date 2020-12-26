@@ -74,9 +74,6 @@ function Products(props) {
 			} catch (error) {
 				console.log("fetch data catch");
 				console.log(error);
-				setAvailability(prevData => {
-					return ([...prevData, {manufacturer: manufact, data: "[]"}])
-				});
 			}
 		};
 		if (uniqueManufact) {
