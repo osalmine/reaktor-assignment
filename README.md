@@ -1,5 +1,5 @@
 # reaktor-assignment
-Reaktor junior pre-assignment
+Reaktor junior pre-assignment for summer 2021
 > Your client is a clothing brand that is looking for a simple web app to use in their warehouses. To do their work efficiently, the warehouse workers need a fast and simple listing page per product category, where they can check simple product and availability information from a single UI.
 
 I tackled this task using NodeJs (Express) on the backend and React on the frontend.
