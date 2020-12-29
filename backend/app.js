@@ -7,8 +7,8 @@ const apiUrl = 'https://bad-api-assignment.reaktor.com/v2/';
 
 const app = express();
 
-const clientPath = path.join(__dirname, '..', 'frontend/build');
-app.use(express.static(clientPath));
+const frontPath = path.join(__dirname, '..', 'frontend/build');
+app.use(express.static(frontPath));
 
 async function parseAvailability(resData) {
 	let parsedJson = {
@@ -28,7 +28,7 @@ async function parseAvailability(resData) {
 
 axios.interceptors.response.use(res => {
 	if (res.data.response === '[]') {
-		console.log("Bad response from", res.config.url, " requesting again");
+		console.log("Bad response from", res.config.url, "requesting again");
 		return axios.get(res.config.url).then(res => {
 			return res;
 		}).catch(err => {
@@ -64,7 +64,7 @@ app.get('/api/products/:product', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-	res.sendFile(path.join(clientPath, 'index.html'));
+	res.sendFile(path.join(frontPath, 'index.html'));
 });
 
 app.listen(port, () => {
