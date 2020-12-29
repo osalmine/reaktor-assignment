@@ -13,14 +13,11 @@ const axiosCancelToken = axios.CancelToken;
 const source = axiosCancelToken.source();
 
 function handleCancelRequest() {
-	console.log("Attempting to cancel");
-	source.cancel('canceled');
+	source.cancel('Canceled axios request');
 }
 
 window.addEventListener("beforeunload", () => {
-	console.log("RELOADING");
-	console.log("Attempting to cancel");
-	source.cancel('canceled');
+	source.cancel('Canceled axios request');
 });
 
 function App() {

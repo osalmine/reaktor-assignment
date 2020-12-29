@@ -15,18 +15,13 @@ function Products(props) {
 	useEffect(() => {
 		const fetchData = () => {
 			try {
+				console.log(`Quering for ${props.product}`);
 				axios(`/api/products/${props.product}`, {
 					cancelToken: props.source.token
 				})
 				.then(result => {
 					setProductData(result.data);
-					console.log("result.data:", result.data);
-					setUniqueManufact(result.data.filter((el, i, self) => 
-						i === self.findIndex((t) => (
-							t.manufacturer === el.manufacturer
-						))
-					).map(el => el.manufacturer));
-					console.log(result);
+					console.log("Product result.data:", result.data);
 				})
 				.catch(err => {
 					if (axios.isCancel(err)) {
@@ -42,7 +37,18 @@ function Products(props) {
 		fetchData();
 	}, [props.source.token, props.product]);
 
-	console.log("uniqueManufact", uniqueManufact);
+	useEffect(() => {
+		const getManufact = () => {
+			setUniqueManufact(productData.filter((el, i, self) => 
+				i === self.findIndex((t) => (
+					t.manufacturer === el.manufacturer
+				))
+			).map(el => el.manufacturer));
+		};
+		if (productData) {
+			getManufact();
+		}
+	}, [productData]);
 
 	useEffect(() => {
 		const fetchData = () => {
@@ -54,7 +60,7 @@ function Products(props) {
 					})
 					.then(result => {
 						setAvailability(prevData => {
-							return ([...prevData, {manufacturer: manufact, data: result.data}]);
+							return ([...prevData, { manufacturer: manufact, data: result.data }]);
 						});
 					})
 					.catch(err => {
@@ -63,7 +69,7 @@ function Products(props) {
 						} else {
 							console.log(err);
 							setAvailability(prevData => {
-								return ([...prevData, {manufacturer: manufact, data: {code: err.response.status, response: null}}]);
+								return ([...prevData, { manufacturer: manufact, data: { code: err.response.status, response: null }}]);
 							});
 						}
 					});
@@ -73,13 +79,14 @@ function Products(props) {
 			}
 		};
 		if (uniqueManufact) {
+			console.log("uniqueManufact", uniqueManufact);
 			fetchData();
 		}
 	}, [uniqueManufact, props.source.token]);
 
 	console.log("availability:", availability);
 
-	return (<>
+	return (
 	<div className="products container">
 		<div className="row">
 			{!productData
@@ -90,7 +97,7 @@ function Products(props) {
 				return (<ProductCard name={product.name} inStock={getProductAvailability(product.manufacturer, product.id, availability)} colors={product.color} price={product.price} manufact={product.manufacturer} />);
 			})}
 		</div>
-	</div></>);
+	</div>);
 }
 
 function getProductAvailability(manufacturer, id, availability) {
