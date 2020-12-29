@@ -10,7 +10,7 @@ const app = express();
 const clientPath = path.join(__dirname, '..', 'frontend/build');
 app.use(express.static(clientPath));
 
-async function parseAvailability(resData, manufacturer) {
+async function parseAvailability(resData) {
 	let parsedJson = {
 		"code": 200,
 		"response": []
@@ -27,35 +27,22 @@ async function parseAvailability(resData, manufacturer) {
 }
 
 axios.interceptors.response.use(res => {
-	console.log("INTERCEPTING RESPONSE");
-	console.log("URL:", res.config.url);
 	if (res.data.response === '[]') {
-		console.log(res.data.response);
-		console.log("REQUESTING AGAIN");
+		console.log("Bad response from", res.config.url, " requesting again");
 		return axios.get(res.config.url).then(res => {
-			console.log("RETURNING SUCCESSFUL DATA", res.data.response[0]);
 			return res;
 		}).catch(err => {
-			console.log("retry failed");
 			return Promise.reject(err);
 		});
 	}
-	// console.log("returning interception", res.data.response[0]);
 	return res;
 });
 
 app.get('/api/availability/:manufacturer', (req, res) => {
-	console.log(`URL: ${apiUrl}availability/${req.params.manufacturer}`);
-	axios.get(`${apiUrl}availability/${req.params.manufacturer}`, {
-		// headers: {
-		// 	'x-force-error-mode': 'all'
-		// }
-	}).then(async response => {
-			let parsedData = await parseAvailability(response, req.params.manufacturer);
+	axios.get(`${apiUrl}availability/${req.params.manufacturer}`)
+		.then(async response => {
+			let parsedData = await parseAvailability(response);
 			console.log("sending parsed data", req.params.manufacturer);
-			if (parsedData.response[0]) {
-				console.log(parsedData.response[0].inStock);
-			}
 			res.json(parsedData);
 		})
 		.catch(error => {
@@ -65,11 +52,9 @@ app.get('/api/availability/:manufacturer', (req, res) => {
 });
 
 app.get('/api/products/:product', (req, res) => {
-	// console.log(`${apiUrl}products/${req.params.product}`);
 	axios.get(`${apiUrl}products/${req.params.product}`)
 		.then(response => {
-			// console.log(response.data);
-			console.log("sent response from");
+			console.log("sending response for", req.params.product);
 			res.json(response.data);
 		})
 		.catch(error => {
@@ -79,7 +64,6 @@ app.get('/api/products/:product', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-	// console.log(`Serving ${path.join(clientPath, 'index.html')}`);
 	res.sendFile(path.join(clientPath, 'index.html'));
 });
 

@@ -6,7 +6,7 @@ function ProductCard({ name, colors, price, manufact, inStock }) {
 		<div className="card mb-4 shadow-sm">
 			<h2 className="product-name">{name}</h2>
 			<div className="card-body">
-				<p className="product-text manufacturer-name">{manufact}</p>
+				{manufact && <p className="product-text manufacturer-name">By: {manufact}</p>}
 				{colors && <div className="d-flex justify-content-start align-items-center">
 					<p className="product-text">Colors:</p>
 					{colors && colors.map(color => {
