@@ -17,7 +17,7 @@ The postinstall script in the root package.json will trigger after the install s
 
 ## How it works
 
-I tried to focus on speed and to load content while the API queries are processing.
+I tried to focus on speed which means loading content while the API queries are processing.
 
 1. When entering a product page, the page renders with some elements as "loading" just to fill out the page while the API is queried.
 2. The product page sends a request to the backend which in turn sends a request to the API for the specific product.
