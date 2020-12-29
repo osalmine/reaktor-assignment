@@ -29,5 +29,5 @@ The server intercepts each response from the API before it's sent to the fronten
 To be able to refresh and switch pages while the page is waiting a response from the server, an axios CancelToken is generated and used to cancel the requests.
 
 **Some issues:**
-- The axios CancelToken doesn't seem to work when the products are loading. Fortunately this query is so fast that it doesn't really matter.
+- When the products are loading, switching pages isn't possible for some reason. Probably the browser is too busy doing other things.
 - Quering the API indefinitely is probably not a good idea in a real life scenario, but as this API will eventually send a correct response, it shouldn't break anything.
