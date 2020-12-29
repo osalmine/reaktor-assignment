@@ -7,7 +7,7 @@ const apiUrl = 'https://bad-api-assignment.reaktor.com/v2/';
 
 const app = express();
 
-const clientPath = path.join(__dirname, '..', 'client/build');
+const clientPath = path.join(__dirname, '..', 'frontend/build');
 app.use(express.static(clientPath));
 
 async function parseAvailability(resData, manufacturer) {
@@ -84,5 +84,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(port, () => {
-	console.log(`Server running on port ${port}`);
+	console.log(`Server running on localhost:${port}`);
 });
