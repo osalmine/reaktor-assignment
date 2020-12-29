@@ -15,25 +15,6 @@ async function parseAvailability(resData, manufacturer) {
 		"code": 200,
 		"response": []
 	};
-
-	// console.log(resData.data.response);
-	// if (resData.data.response === '[]' && requestAgainNb !== 0) {
-	// 	setTimeout(() => console.log("waiting 0.1sec"), 100);
-	// 	console.log("no data");
-	// 	requestAgainNb -= 1;
-	// 	axios.get(`${apiUrl}availability/${manufacturer}`, {
-	// 		// headers: {
-	// 		// 	'x-force-error-mode': 'all'
-	// 		// }
-	// 	})
-	// 	.then(response => {
-	// 		let parsedData = parseAvailability(response);
-	// 		return(parsedData);
-	// 	})
-	// 	.catch(error => {
-	// 		console.log(error);
-	// 	});
-	// }
 	if (resData.data.response && resData.data.response !== '[]') {
 		resData.data.response.forEach(element => {
 			const str = element.DATAPAYLOAD;
@@ -71,7 +52,6 @@ app.get('/api/availability/:manufacturer', (req, res) => {
 		// }
 	}).then(async response => {
 			let parsedData = await parseAvailability(response, req.params.manufacturer);
-			// console.log(parsedData);
 			console.log("sending parsed data", req.params.manufacturer);
 			if (parsedData.response[0]) {
 				console.log(parsedData.response[0].inStock);

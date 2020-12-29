@@ -41,7 +41,7 @@ function Products(props) {
 			}
 		};
 		fetchData();
-	}, []);
+	}, [props.source.token, props.product]);
 
 	console.log("uniqueManufact", uniqueManufact);
 
@@ -62,24 +62,21 @@ function Products(props) {
 						if (axios.isCancel(err)) {
 							console.log("axios request cancelled", err);
 						} else {
-							console.log("axios get request error");
 							console.log(err);
 							setAvailability(prevData => {
 								return ([...prevData, {manufacturer: manufact, data: {code: err.response.status, response: null}}]);
 							});
 						}
 					});
-					// console.log("availability:", result.data);
 				});
 			} catch (error) {
-				console.log("fetch data catch");
 				console.log(error);
 			}
 		};
 		if (uniqueManufact) {
 			fetchData();
 		}
-	}, [uniqueManufact]);
+	}, [uniqueManufact, props.source.token]);
 
 	console.log("availability:", availability);
 

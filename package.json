@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Root package.json to make it possible to deploy to heroku",
   "scripts": {
-    "postinstall": "npm install --prefix api && npm install --prefix client && npm run build --prefix client"
-  }
+    "postinstall": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend"
+  },
+  "author": "Onni Salminen"
 }
