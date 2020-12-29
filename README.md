@@ -28,6 +28,7 @@ The server intercepts each response from the API before it's sent to the fronten
 
 To be able to refresh and switch pages while the page is waiting a response from the server, an axios CancelToken is generated and used to cancel the requests.
 
-**Some issues:**
+**Some issues & improvement ideas:**
 - When the products are loading, switching pages isn't possible for some reason. Probably the browser is too busy doing other things.
 - Quering the API indefinitely is probably not a good idea in a real life scenario, but as this API will eventually send a correct response, it shouldn't break anything.
+- I could have requested all the data from all products and manufacturers in the beginning and stored them somewhere so they don't have to be queried every time, but I thought it was a bit off-scope for this project.
