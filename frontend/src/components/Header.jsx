@@ -5,19 +5,19 @@ import {
   } from "react-router-dom";
 import './Header.css';
 
-function Header(props) {
+function Header({ onCancel }) {
 	return (<>
 		<nav className="navbar fixed-top navbar-expand-lg navbar-light bg-light py-3">
-			<NavBrandLink onCancel={props.onCancel} name="West Side Street Clothing" to="/" />
+			<a onClick={() => onCancel()} className="navbar-brand navbar-brand-text" href="/">West Side Street Clothing</a>
 			<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
 				<span className="navbar-toggler-icon"></span>
 			</button>
 			<div className="collapse navbar-collapse navbar-center navbar-text" id="navbarNavAltMarkup">
 				<Router>
 					<div className="navbar-nav">
-						<NavLink onCancel={props.onCancel} name="Gloves" to="/gloves" />
-						<NavLink onCancel={props.onCancel} name="Facemasks" to="/facemasks" />
-						<NavLink onCancel={props.onCancel} name="Beanies" to="/beanies" />
+						<NavLink onCancel={onCancel} name="Gloves" to="/gloves" />
+						<NavLink onCancel={onCancel} name="Facemasks" to="/facemasks" />
+						<NavLink onCancel={onCancel} name="Beanies" to="/beanies" />
 					</div>
 				</Router>
 			</div>
@@ -25,28 +25,12 @@ function Header(props) {
 	</>);
 }
 
-function NavBrandLink(props) {
-	function newCancelReq() {
-		if (props.onCancel) {
-			props.onCancel();
-		}
-	}
-	return (<>
-		<a onClick={newCancelReq} className="navbar-brand navbar-brand-text" href={props.to}>{props.name}</a>
-	</>);
-}
-
-function NavLink(props) {
+function NavLink({ name, to, onCancel }) {
 	let match = useRouteMatch({
-		path: props.to,
+		path: to,
 	});
-	function newCancelReq() {
-		if (props.onCancel) {
-			props.onCancel();
-		}
-	}
 	return (<>
-		<a onClick={newCancelReq} className={match ? "nav-link active" : "nav-link"} href={props.to}>{props.name}</a>
+		<a onClick={() => onCancel()} className={match ? "nav-link active" : "nav-link"} href={to}>{name}</a>
 	</>);
 }
 
